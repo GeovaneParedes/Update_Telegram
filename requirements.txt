@@ -1,0 +1,12 @@
+# requirements.txt
+# Versões mínimas recomendadas para garantir estabilidade e compatibilidade com
+# Python 3.11+ e os recursos de segurança/desempenho aplicados.
+
+# Core: Cliente Telegram (Telethon)
+telethon>=1.35.0
+
+# Otimização de Criptografia (Speedup)
+tgcrypto>=1.2.5  # Recomendado para acelerar operações criptográficas do Telegram
+
+# Ambiente/Segurança: Carregar variáveis de ambiente (.env)
+python-dotenv>=1.2.1
