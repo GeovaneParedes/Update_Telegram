@@ -46,7 +46,8 @@ class App(tk.Tk):
         try:
             loop.run_until_complete(self.run_sending_logic(folder_path))
         except Exception as e:
-            self.after(0, lambda: messagebox.showerror("Erro Crítico da Thread", str(e)))
+            self.after(0, lambda: messagebox.showerror("Erro Crítico da Thread",
+                                                        str(e)))
         finally:
             loop.close()
 
@@ -55,7 +56,8 @@ class App(tk.Tk):
         folder_path = self.path_entry.get().strip()
         
         if not folder_path or not os.path.isdir(folder_path):
-            messagebox.showerror("Erro de Validação", "Caminho da pasta inválido ou vazio.")
+            messagebox.showerror("Erro de Validação", 
+                                 "Caminho da pasta inválido ou vazio.")
             return
 
         # Zera o contador de progresso
@@ -86,7 +88,8 @@ class App(tk.Tk):
         self.total_files = 0
         
         if not all([API_ID, API_HASH, CHANNEL_ID]):
-             messagebox.showerror("Erro de Configuração", "API_ID, API_HASH ou CHANNEL_ID estão faltando no .env.")
+             messagebox.showerror("Erro de Configuração", 
+                      "API_ID, API_HASH ou CHANNEL_ID estão faltando no .env.")
              self.destroy() 
              return
             
@@ -102,12 +105,14 @@ class App(tk.Tk):
         path_frame.grid(row=0, column=0, sticky="ew", padx=10, pady=(10, 5))
         path_frame.grid_columnconfigure(0, weight=1)
         
-        ttk.Label(path_frame, text="Pasta a Enviar:").grid(row=0, column=0, sticky="w")
+        ttk.Label(path_frame, text="Pasta a Enviar:").grid(row=0, column=0, 
+                                                           sticky="w")
         
         self.path_entry = ttk.Entry(path_frame, width=50)
         self.path_entry.grid(row=1, column=0, sticky="ew", padx=(0, 5))
         
-        browse_button = ttk.Button(path_frame, text="Procurar...", command=self.browse_folder)
+        browse_button = ttk.Button(path_frame, text="Procurar...", 
+                                   command=self.browse_folder)
         browse_button.grid(row=1, column=1, sticky="e")
         
         self.send_button = ttk.Button(self, text="▶ INICIAR ENVIO E EXCLUSÃO", 
@@ -115,18 +120,25 @@ class App(tk.Tk):
         self.send_button.grid(row=2, column=0, sticky="ew", padx=10, pady=5) # Ajustado para row 2
         
         # Novo Label para mostrar a porcentagem
-        self.progress_label = ttk.Label(self, text="Status: Aguardando...", anchor='w')
-        self.progress_label.grid(row=3, column=0, sticky="ew", padx=10, pady=(5, 2))
+        self.progress_label = ttk.Label(self, text="Status: Aguardando...", 
+                                        anchor='w')
+        self.progress_label.grid(row=3, column=0, sticky="ew", padx=10, 
+                                 pady=(5, 2))
         
         # Barra de progresso determinada
-        self.progress_bar = ttk.Progressbar(self, mode='determinate', length=580)
-        self.progress_bar.grid(row=4, column=0, sticky="ew", padx=10, pady=(0, 10)) # Ajustado para row 4
+        self.progress_bar = ttk.Progressbar(self, mode='determinate', 
+                                            length=580)
+        self.progress_bar.grid(row=4, column=0, sticky="ew", padx=10, 
+                               pady=(0, 10)) # Ajustado para row 4
         
         # Logs
-        ttk.Label(self, text="Log de Atividades:").grid(row=5, column=0, sticky="sw", padx=10)
+        ttk.Label(self, text="Log de Atividades:").grid(row=5, column=0, 
+                                                        sticky="sw", padx=10)
         
-        self.log_textbox = tk.Text(self, state="disabled", height=10, wrap=tk.WORD)
-        self.log_textbox.grid(row=6, column=0, sticky="nsew", padx=10, pady=(0, 10))
+        self.log_textbox = tk.Text(self, state="disabled", height=10, 
+                                   wrap=tk.WORD)
+        self.log_textbox.grid(row=6, column=0, sticky="nsew", padx=10, 
+                              pady=(0, 10))
         
         scrollbar = ttk.Scrollbar(self, command=self.log_textbox.yview)
         scrollbar.grid(row=6, column=0, sticky='nse')
@@ -134,7 +146,8 @@ class App(tk.Tk):
 
     def browse_folder(self):
         """Abre a caixa de diálogo para seleção de pasta."""
-        folder_selected = filedialog.askdirectory(initialdir=os.path.expanduser("~"))
+        folder_selected = filedialog.askdirectory(
+            initialdir=os.path.expanduser("~"))
         if folder_selected:
             self.path_entry.delete(0, tk.END)
             self.path_entry.insert(0, folder_selected)
@@ -167,7 +180,9 @@ class App(tk.Tk):
                 # Atualização da GUI
                 self.after(0, self.progress_bar.config, {'value': total_progress})
                 self.after(0, self.progress_label.config, 
-                           {'text': f"Transferindo Arquivo: {file_percent}% | Progresso Total: {int(total_progress)}% ({self.files_sent}/{self.total_files})"})
+                           {'text': f"Transferindo Arquivo: {file_percent}%" 
+                            f"| Progresso Total: {int(total_progress)}%" 
+                            f"({self.files_sent}/{self.total_files})"})
             
     # --- Lógica principal de envio (ASYNCRONA) ---
     async def run_sending_logic(self, directory: str):
@@ -180,10 +195,14 @@ class App(tk.Tk):
             await self.client.start()
             
             if not await self.client.is_user_authorized():
-                self.log_update("ATENÇÃO", "Sessão não autorizada. Rode o script de login.")
-                raise SessionPasswordNeededError("Sessão não autorizada. Autentique o arquivo de sessão.")
+                self.log_update(
+                    "ATENÇÃO", "Sessão não autorizada. Rode o script de login.")
+                raise SessionPasswordNeededError(
+                    "Sessão não autorizada. Autentique o arquivo de sessão.")
 
-            self.log_update("Conexão", f"Sessão iniciada como: {(await self.client.get_me()).username}")
+            self.log_update(
+                "Conexão",
+                f"Sessão iniciada como: {(await self.client.get_me()).username}")
             
             # 2. Resolução do Peer (Identificar o canal)
             entity = await self.client.get_entity(self.channel_id)
@@ -195,14 +214,18 @@ class App(tk.Tk):
                 all_files.extend([os.path.join(root, f) for f in files])
                 
             self.total_files = len(all_files)
-            self.log_update("DEBUG", f"Total de arquivos encontrados para envio: {self.total_files}")
+            self.log_update(
+                "DEBUG", 
+                f"Total de arquivos encontrados para envio: {self.total_files}")
             
             if self.total_files == 0:
-                self.log_update("AVISO", "A pasta está vazia. Processo finalizado.")
+                self.log_update(
+                    "AVISO", "A pasta está vazia. Processo finalizado.")
                 return
 
             # Configura a barra de progresso para o modo determinado
-            self.after(0, self.progress_bar.config, {'mode': 'determinate', 'maximum': 100})
+            self.after(0, self.progress_bar.config, {'mode': 'determinate', 
+                                                     'maximum': 100})
             
             # 4. Percorre e envia
             for file_path in all_files:
@@ -221,7 +244,8 @@ class App(tk.Tk):
                     self.files_sent += 1
                     
                     # Atualiza progresso GERAL após a conclusão do arquivo
-                    self.after(0, self.progress_bar.config, {'value': (self.files_sent / self.total_files) * 100})
+                    self.after(0, self.progress_bar.config, 
+                               {'value': (self.files_sent / self.total_files) * 100})
                     
                 except RPCError as e:
                     status = f"Erro RPC (Telegram) CODE {e.code}: {e.message}"
@@ -238,11 +262,17 @@ class App(tk.Tk):
 
         # 6. Captura de Erros Críticos
         except SessionPasswordNeededError as e:
-            self.after(0, lambda: messagebox.showerror("Erro de Autenticação", f"Autenticação de 2FA necessária! {e}"))
+            self.after(0, lambda: messagebox.showerror(
+                "Erro de Autenticação", 
+                f"Autenticação de 2FA necessária! {e}"))
         except (PeerIdInvalidError, ChannelPrivateError) as e:
-            self.after(0, lambda: messagebox.showerror("Erro de ID/Permissão", f"Falha ao encontrar o canal {self.channel_id}. {e}"))
+            self.after(0, lambda: messagebox.showerror(
+                "Erro de ID/Permissão", 
+                f"Falha ao encontrar o canal {self.channel_id}. {e}"))
         except Exception as e:
-            self.after(0, lambda: messagebox.showerror("Erro Inesperado Crítico", f"Ocorreu um erro crítico: {type(e).__name__} - {e}"))
+            self.after(0, lambda: messagebox.showerror(
+                "Erro Inesperado Crítico", 
+                f"Ocorreu um erro crítico: {type(e).__name__} - {e}"))
             
         finally:
             await self.client.disconnect()
@@ -253,11 +283,15 @@ class App(tk.Tk):
         self.progress_bar.stop()
         
         # Restaura o botão e o estado
-        self.send_button.config(state="normal", text="▶ INICIAR ENVIO E EXCLUSÃO")
+        self.send_button.config(
+            state="normal", text="▶ INICIAR ENVIO E EXCLUSÃO")
         
         # Adiciona a mensagem final e zera o label
         self._append_to_log("\n--- APLICAÇÃO PRONTA PARA NOVO ENVIO ---")
-        self.progress_label.config(text=f"Status: Concluído ({self.files_sent} enviados de {self.total_files})")
+        self.progress_label.config(
+            text=
+            f"Status: Concluído ({self.files_sent}"
+            f"enviados de {self.total_files})")
         
         # Força o Tkinter a redesenhar
         self.update_idletasks()
