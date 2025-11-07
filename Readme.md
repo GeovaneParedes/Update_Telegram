@@ -48,7 +48,7 @@ It is designed following **Clean Code** and **SOLID** principles, separating the
 
 1.  **Clone the Repository** (If applicable):
     ```bash
-    git clone [your-repository-url]
+    git clone git@github.com:GeovaneParedes/Update_Telegram.git
     cd telegram-batch-sender
     ```
 
